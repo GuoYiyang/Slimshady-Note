@@ -1,7 +1,5 @@
 # RPC框架
 
->   参考文档：[RPC框架](https://snailclimb.gitee.io/javaguide/#/docs/system-design/data-communication/why-use-rpc)
-
 ## RPC简介
 
 **什么是 RPC？**
@@ -9,8 +7,6 @@
 RPC（Remote Procedure Call）—远程过程调用，它是一种通过网络从远程计算机程序上请求服务，而不需要了解底层网络技术的协议。比如两个不同的服务 A、B 部署在两台不同的机器上，那么服务 A 如果想要调用服务 B 中的某个方法该怎么办呢？使用 HTTP请求当然可以，但是可能会比较慢而且一些优化做的并不好。 RPC 的出现就是为了解决这个问题。
 
 ## RPC原理
-
-<img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gf4olrump8j30dv08t77k.jpg" alt="RPC原理图" style="zoom:67%;" />
 
 1.  服务消费方（client）调用以本地调用方式调用服务；
 2.  client stub接收到调用后负责将方法、参数等组装成能够进行网络传输的消息体；
@@ -21,10 +17,6 @@ RPC（Remote Procedure Call）—远程过程调用，它是一种通过网络�
 7.  server stub将返回结果打包成消息并发送至消费方；
 8.  client stub接收到消息，并进行解码；
 9.  服务消费方得到最终结果。
-
-时序图：
-
-<img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gf4ondbhbfj30gh0fsq51.jpg" alt="RPC原理时序图"  />
 
 ## RPC 解决了什么问题？
 

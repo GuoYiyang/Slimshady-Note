@@ -1,24 +1,34 @@
 # **HTTP**协议
 
->   参考文档：[计算机网络]([https://cyc2018.github.io/CS-Notes/#/notes/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C](https://cyc2018.github.io/CS-Notes/#/notes/计算机网络))
-
-## 基础概念
-
-### URI
-
-URI 包含 URL 和 URN。
-
-<img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gf3uk2nss6j30l60b70tf.jpg" alt="img" style="zoom: 67%;" />
+# 基础概念
 
 ### 请求和响应报文
 
+客户端发送一个请求报文给服务器，服务器根据请求报文中的信息进行处理，并将处理结果放入响应报文中返回给客户端。
+
 #### 请求报文
 
-![img](https://tva1.sinaimg.cn/large/007S8ZIlgy1gf3u5vb108j30i80650t3.jpg)
+请求报文结构：
+
+- 第一行是包含了请求方法、URL、协议版本；
+- 接下来的多行都是请求首部 Header，每个首部都有一个首部名称，以及对应的值。
+- 一个空行用来分隔首部和内容主体 Body
+- 最后是请求的内容主体
 
 #### 响应报文
 
-![img](https://tva1.sinaimg.cn/large/007S8ZIlgy1gf3u5w0jksj30jk07f0t6.jpg)
+响应报文结构：
+
+- 第一行包含协议版本、状态码以及描述，最常见的是 200 OK 表示请求成功了
+- 接下来多行也是首部内容
+- 一个空行分隔首部和内容主体
+- 最后是响应的内容主体
+
+### URL
+
+HTTP 使用 URL（ **U** niform **R**esource **L**ocator，统一资源定位符）来定位资源，它是 URI（**U**niform **R**esource **I**dentifier，统一资源标识符）的子集，URL 在 URI 的基础上增加了定位能力。URI 除了包含 URL，还包含 URN（Uniform Resource Name，统一资源名称），它只是用来定义一个资源的名称，并不具备定位该资源的能力。例如 urn:isbn:0451450523 用来定义一个书籍名称，但是却没有表示怎么找到这本书。
+
+![img](https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/8441b2c4-dca7-4d6b-8efb-f22efccaf331.png)
 
 ## HTTP 方法
 
@@ -354,112 +364,7 @@ Last-Modified: Wed, 21 Oct 2015 07:28:00 GMT
 If-Modified-Since: Wed, 21 Oct 2015 07:28:00 GMT
 ```
 
-### 内容协商
-
-通过内容协商返回最合适的内容，例如根据浏览器的默认语言选择返回中文界面还是英文界面。
-
-#### 1. 类型
-
-**1.1 服务端驱动型**
-
-客户端设置特定的 HTTP 首部字段，例如 Accept、Accept-Charset、Accept-Encoding、Accept-Language，服务器根据这些字段返回特定的资源。
-
-它存在以下问题：
-
--   服务器很难知道客户端浏览器的全部信息；
--   客户端提供的信息相当冗长（HTTP/2 协议的首部压缩机制缓解了这个问题），并且存在隐私风险（HTTP 指纹识别技术）；
--   给定的资源需要返回不同的展现形式，共享缓存的效率会降低，而服务器端的实现会越来越复杂。
-
-**1.2 代理驱动型**
-
-服务器返回 300 Multiple Choices 或者 406 Not Acceptable，客户端从中选出最合适的那个资源。
-
-#### 2. Vary
-
-```html
-Vary: Accept-Language
-```
-
-在使用内容协商的情况下，只有当缓存服务器中的缓存满足内容协商条件时，才能使用该缓存，否则应该向源服务器请求该资源。
-
-例如，一个客户端发送了一个包含 Accept-Language 首部字段的请求之后，源服务器返回的响应包含 `Vary: Accept-Language` 内容，缓存服务器对这个响应进行缓存之后，在客户端下一次访问同一个 URL 资源，并且 Accept-Language 与缓存中的对应的值相同时才会返回该缓存。
-
-### 内容编码
-
-内容编码将实体主体进行压缩，从而减少传输的数据量。
-
-常用的内容编码有：gzip、compress、deflate、identity。
-
-浏览器发送 Accept-Encoding 首部，其中包含有它所支持的压缩算法，以及各自的优先级。服务器则从中选择一种，使用该算法对响应的消息主体进行压缩，并且发送 Content-Encoding 首部来告知浏览器它选择了哪一种算法。由于该内容协商过程是基于编码类型来选择资源的展现形式的，响应报文的 Vary 首部字段至少要包含 Content-Encoding。
-
-### 范围请求
-
-如果网络出现中断，服务器只发送了一部分数据，范围请求可以使得客户端只请求服务器未发送的那部分数据，从而避免服务器重新发送所有数据。
-
-#### 1. Range
-
-在请求报文中添加 Range 首部字段指定请求的范围。
-
-```html
-GET /z4d4kWk.jpg HTTP/1.1
-Host: i.imgur.com
-Range: bytes=0-1023
-```
-
-请求成功的话服务器返回的响应包含 206 Partial Content 状态码。
-
-```html
-HTTP/1.1 206 Partial Content
-Content-Range: bytes 0-1023/146515
-Content-Length: 1024
-...
-(binary content)
-```
-
-#### 2. Accept-Ranges
-
-响应首部字段 Accept-Ranges 用于告知客户端是否能处理范围请求，可以处理使用 bytes，否则使用 none。
-
-```html
-Accept-Ranges: bytes
-```
-
-#### 3. 响应状态码
-
--   在请求成功的情况下，服务器会返回 206 Partial Content 状态码。
--   在请求的范围越界的情况下，服务器会返回 416 Requested Range Not Satisfiable 状态码。
--   在不支持范围请求的情况下，服务器会返回 200 OK 状态码。
-
-### 分块传输编码
-
-Chunked Transfer Encoding，可以把数据分割成多块，让浏览器逐步显示页面。
-
-### 多部分对象集合
-
-一份报文主体内可含有多种类型的实体同时发送，每个部分之间用 boundary 字段定义的分隔符进行分隔，每个部分都可以有首部字段。
-
-例如，上传多个表单时可以使用如下方式：
-
-```html
-Content-Type: multipart/form-data; boundary=AaB03x
-
---AaB03x
-Content-Disposition: form-data; name="submit-name"
-
-Larry
---AaB03x
-Content-Disposition: form-data; name="files"; filename="file1.txt"
-Content-Type: text/plain
-
-... contents of file1.txt ...
---AaB03x--
-```
-
-### 虚拟主机
-
-HTTP/1.1 使用虚拟主机技术，使得一台服务器拥有多个域名，并且在逻辑上可以看成多个服务器。
-
-### 通信数据转发
+### 正向代理和反向代理
 
 #### 1. 代理
 
@@ -476,11 +381,11 @@ HTTP/1.1 使用虚拟主机技术，使得一台服务器拥有多个域名，�
 
 -   用户察觉得到正向代理的存在。
 
-![img](https://tva1.sinaimg.cn/large/007S8ZIlgy1gf3u5wvhalj30en04q0sr.jpg)
+![img](https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/a314bb79-5b18-4e63-a976-3448bffa6f1b.png)
 
 -   而反向代理一般位于内部网络中，用户察觉不到。
 
-![img](https://tva1.sinaimg.cn/large/007S8ZIlgy1gf3u5xy32ej30cz04v0st.jpg)
+![img](https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/2d09a847-b854-439c-9198-b29c65810944.png)
 
 #### 2. 网关
 
@@ -502,8 +407,6 @@ HTTP 有以下安全性问题：
 
 通过使用 SSL，HTTPS 具有了加密（防窃听）、认证（防伪装）和完整性保护（防篡改）。
 
-<img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gf3u5zi113j30un09l0uo.jpg" alt="img" style="zoom:67%;" />
-
 ### 加密
 
 #### 1. 对称密钥加密
@@ -513,7 +416,7 @@ HTTP 有以下安全性问题：
 -   优点：运算速度快；
 -   缺点：无法安全地将密钥传输给通信方。
 
-<img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gf3u60rbqhj30lg0a90tg.jpg" alt="img" style="zoom:67%;" />
+![img](https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/7fffa4b8-b36d-471f-ad0c-a88ee763bb76.png)
 
 #### 2.非对称密钥加密
 
@@ -526,7 +429,7 @@ HTTP 有以下安全性问题：
 -   优点：可以更安全地将公开密钥传输给通信发送方；
 -   缺点：运算速度慢。
 
-<img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gf3u61pwnmj30ln0ax0tj.jpg" alt="img" style="zoom:67%;" />
+![img](https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/39ccb299-ee99-4dd1-b8b4-2f9ec9495cb4.png)
 
 #### 3. HTTPS 采用的加密方式
 
@@ -580,11 +483,7 @@ HTTP/1.x 实现简单是以**牺牲性能**为代价的：
 
 ### 二进制分帧层
 
-HTTP/2.0 将报文分成 HEADERS 帧和 DATA 帧，它们都是二进制格式的。
-
-<img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gf3u62zk13j30fh0c60t9.jpg" alt="img" style="zoom:67%;" />
-
-**在通信过程中，只会有一个 TCP 连接存在，它承载了任意数量的双向数据流（Stream）。**
+HTTP/2.0 将报文分成 HEADERS 帧和 DATA 帧，它们都是二进制格式的。任意数量的双向数据流（Stream）。
 
 -   一个数据流（Stream）都有一个唯一标识符和可选的优先级信息，用于承载双向信息。
 -   消息（Message）是与逻辑请求或响应对应的完整的一系列帧。
@@ -594,8 +493,6 @@ HTTP/2.0 将报文分成 HEADERS 帧和 DATA 帧，它们都是二进制格式�
 
 HTTP/2.0 在客户端请求一个资源时，会把相关的资源一起发送给客户端，客户端就不需要再次发起请求了。例如客户端请求 page.html 页面，服务端就把 script.js 和 style.css 等与之相关的资源一起发给客户端。
 
-<img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gf3u640zqjj30np09h0tr.jpg" alt="img" style="zoom:67%;" />
-
 ### 首部压缩
 
 HTTP/1.1 的首部带有大量信息，而且每次都要重复发送。
@@ -603,5 +500,3 @@ HTTP/1.1 的首部带有大量信息，而且每次都要重复发送。
 HTTP/2.0 要求客户端和服务器同时维护和更新一个包含之前见过的首部字段表，从而避免了重复传输。
 
 不仅如此，HTTP/2.0 也使用 Huffman 编码对首部字段进行压缩。
-
-5.  

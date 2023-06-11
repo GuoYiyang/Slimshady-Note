@@ -1,18 +1,4 @@
-# 语言
-
-## C++
-
- [C++面向过程](C++/C++面向过程.md) 
-
- [C++面向对象](C++/C++面向对象.md) 
-
- [C++进阶](C++/C++进阶.md) 
-
- [C++STL](C++/C++STL.md) 
-
- [C++11新特性](C++/C++11新特性.md) 
-
-## Java
+# Java
 
 [Java基础](Java\Java基础.md)
 
@@ -28,25 +14,33 @@
 
 [Java设计模式](Java/Java设计模式.md)
 
----
+# Scala
 
-# 框架
+[Scala快速入门](大数据\Scala.md) 
 
-## SSM
+# C++
+
+ [C++面向过程](C++/C++面向过程.md) 
+
+ [C++面向对象](C++/C++面向对象.md) 
+
+ [C++进阶](C++/C++进阶.md) 
+
+ [C++STL](C++/C++STL.md) 
+
+ [C++11新特性](C++/C++11新特性.md) 
+
+# SSM
 
 [Spring](Java框架/Spring.md) 
 
 [Mybatis](Java框架/Mybatis.md) 
 
-## SpringBoot
+# SpringBoot
 
 [SpringBoot](Java框架/SpringBoot.md) 
 
----
-
-# 理论基础
-
-## 计算机网络
+# 计算机网络
 
 [计算机网络](网络\计算机网络.md) 
 
@@ -54,7 +48,7 @@
 
 [RPC框架](网络/RPC框架.md) 
 
-## 数据库
+# 数据库
 
 [数据库系统原理](数据库\数据库系统原理.md) 
 
@@ -64,7 +58,9 @@
 
 [Redis与缓存](数据库\Redis与缓存.md) 
 
-## 数据结构
+[MongoDB快速入门](大数据\MongoDB.md) 
+
+# 数据结构
 
  [基本数据结构](数据结构与算法/基本数据结构.md) 
 
@@ -80,13 +76,11 @@
 
  [图](数据结构与算法/图.md) 
 
-## 操作系统
+# 操作系统
 
 [操作系统](操作系统\操作系统.md) 
 
 [Linux](操作系统\Linux.md) 
-
-------
 
 # 刷题
 
@@ -94,27 +88,17 @@
 
 [力扣](刷题/力扣.md) 
 
----
+[力扣HOT100](刷题\力扣HOT100.md) 
 
-# 大数据
-
-[Scala快速入门](大数据\Scala.md) 
-
-[MongoDB快速入门](大数据\MongoDB.md) 
-
----
-
-# 工具
-
-## Git
+# Git
 
  [Git](常用工具/Git.md) 
 
-## Docker
+# Docker
 
  [Docker](常用工具/Docker.md) 
 
-## ElasticSearch
+# ElasticSearch
 
 [ElasticSearch入门](ElasticSearch/ElasticSearch入门.md) 
 
@@ -124,7 +108,7 @@
 
 [ElasticSearch之高亮搜索](ElasticSearch/ElasticSearch之高亮搜索.md) 
 
-## 分布式系统
+# 分布式系统
 
 [分布式系统](分布式\分布式系统.md) 
 
